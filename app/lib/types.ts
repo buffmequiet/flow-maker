@@ -119,9 +119,9 @@ export const DEFAULT_HOURS: Record<string, DayHours> = Object.fromEntries(
 );
 
 export function extractDistricts(address: string): string[] {
-  const matches = address.match(/([가-힣]+)구/g);
+  const matches = address.match(/[가-힣]+구/g);
   if (!matches) return [];
-  return [...new Set(matches.map((m) => m.replace("구", "")))];
+  return [...new Set(matches)];
 }
 
 export function daysAgo(dateStr: string): number {

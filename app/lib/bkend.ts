@@ -35,7 +35,10 @@ export async function createPartner(data: object) {
   const res = await fetch(`${API_URL}/v1/data/${PARTNERS_TABLE}`, {
     method: "POST", headers: headers(), body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("업체 등록 실패");
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(err));
+  }
   return res.json();
 }
 

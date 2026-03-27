@@ -141,7 +141,6 @@ export default function PartnerForm({ initial, partnerId }: Props) {
       image_url: imageUrl,
       activity_log: activityLog,
       is_active: status === "제휴 완료",
-      created_at: isEdit ? initial?.createdAt : new Date().toISOString(),
     };
 
     try {
@@ -152,11 +151,14 @@ export default function PartnerForm({ initial, partnerId }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody?.error ?? "저장 실패");
+      }
       router.push("/partners");
       router.refresh();
-    } catch {
-      setError("저장 중 오류가 발생했습니다.");
+    } catch (e) {
+      setError("저장 오류: " + (e instanceof Error ? e.message : "알 수 없는 오류"));
     } finally {
       setSubmitting(false);
     }
@@ -325,13 +327,15 @@ export default function PartnerForm({ initial, partnerId }: Props) {
                   </label>
                   {!hours[key]?.closed && (
                     <>
-                      <input type="time" value={hours[key]?.open ?? "09:00"}
+                      <input type="text" value={hours[key]?.open ?? "09:00"}
                         onChange={(e) => updateHour(key, "open", e.target.value)}
-                        className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none" />
+                        placeholder="09:00"
+                        className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none w-16 text-center" />
                       <span className="text-xs text-gray-400">~</span>
-                      <input type="time" value={hours[key]?.close ?? "18:00"}
+                      <input type="text" value={hours[key]?.close ?? "18:00"}
                         onChange={(e) => updateHour(key, "close", e.target.value)}
-                        className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none" />
+                        placeholder="18:00"
+                        className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none w-16 text-center" />
                     </>
                   )}
                 </div>
