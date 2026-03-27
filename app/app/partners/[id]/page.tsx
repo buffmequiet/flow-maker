@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getPartner } from "@/lib/bkend";
 import { Partner, DAYS, STATUS_STYLE } from "@/lib/types";
 import DeleteButton from "@/components/DeleteButton";
+import CopyButton from "@/components/CopyButton";
 import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ id: string }> };
@@ -77,8 +78,18 @@ export default async function PartnerDetailPage({ params }: Props) {
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">연락처</p>
           <Row label="담당자">{partner.contact_person || "-"}</Row>
-          <Row label="전화번호">{partner.contact_phone || "-"}</Row>
-          <Row label="카카오톡">{partner.contact_kakao || "-"}</Row>
+          <Row label="전화번호">
+            <span className="flex items-center gap-2">
+              {partner.contact_phone || "-"}
+              {partner.contact_phone && <CopyButton text={partner.contact_phone} />}
+            </span>
+          </Row>
+          <Row label="카카오톡">
+            <span className="flex items-center gap-2">
+              {partner.contact_kakao || "-"}
+              {partner.contact_kakao && <CopyButton text={partner.contact_kakao} />}
+            </span>
+          </Row>
         </div>
 
         {/* 운영 정보 */}

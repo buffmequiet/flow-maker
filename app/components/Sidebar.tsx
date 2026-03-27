@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/", label: "대시보드" },
+  { href: "/bookings", label: "예약 관리" },
   { href: "/partners", label: "제휴업체" },
   { href: "/hotels", label: "호텔" },
 ];
