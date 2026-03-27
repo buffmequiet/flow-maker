@@ -1,13 +1,16 @@
 const API_URL = process.env.BKEND_API_URL!;
 const API_KEY = process.env.BKEND_API_KEY!;
-const TABLE = "fm_partners";
+const PARTNERS_TABLE = "fm_partners";
+const HOTELS_TABLE = "fm_hotels";
 
 function headers() {
   return { "X-API-Key": API_KEY, "Content-Type": "application/json" };
 }
 
+// ── Partners ──────────────────────────────────────────────
+
 export async function listPartners(serviceType?: string) {
-  let url = `${API_URL}/v1/data/${TABLE}?limit=100`;
+  let url = `${API_URL}/v1/data/${PARTNERS_TABLE}?limit=100`;
   if (serviceType) {
     const f = encodeURIComponent(JSON.stringify({ service_type: serviceType }));
     url += `&andFilters=${f}`;
@@ -19,7 +22,7 @@ export async function listPartners(serviceType?: string) {
 }
 
 export async function getPartner(id: string) {
-  const res = await fetch(`${API_URL}/v1/data/${TABLE}/${id}`, {
+  const res = await fetch(`${API_URL}/v1/data/${PARTNERS_TABLE}/${id}`, {
     headers: headers(),
     cache: "no-store",
   });
@@ -29,7 +32,7 @@ export async function getPartner(id: string) {
 }
 
 export async function createPartner(data: object) {
-  const res = await fetch(`${API_URL}/v1/data/${TABLE}`, {
+  const res = await fetch(`${API_URL}/v1/data/${PARTNERS_TABLE}`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -39,7 +42,7 @@ export async function createPartner(data: object) {
 }
 
 export async function updatePartner(id: string, data: object) {
-  const res = await fetch(`${API_URL}/v1/data/${TABLE}/${id}`, {
+  const res = await fetch(`${API_URL}/v1/data/${PARTNERS_TABLE}/${id}`, {
     method: "PUT",
     headers: headers(),
     body: JSON.stringify(data),
@@ -49,10 +52,61 @@ export async function updatePartner(id: string, data: object) {
 }
 
 export async function deletePartner(id: string) {
-  const res = await fetch(`${API_URL}/v1/data/${TABLE}/${id}`, {
+  const res = await fetch(`${API_URL}/v1/data/${PARTNERS_TABLE}/${id}`, {
     method: "DELETE",
     headers: headers(),
   });
   if (!res.ok) throw new Error("업체 삭제 실패");
+  return res.json();
+}
+
+// ── Hotels ────────────────────────────────────────────────
+
+export async function listHotels() {
+  const res = await fetch(`${API_URL}/v1/data/${HOTELS_TABLE}?limit=100`, {
+    headers: headers(),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("호텔 목록 조회 실패");
+  const json = await res.json();
+  return json.data?.items ?? [];
+}
+
+export async function getHotel(id: string) {
+  const res = await fetch(`${API_URL}/v1/data/${HOTELS_TABLE}/${id}`, {
+    headers: headers(),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("호텔 조회 실패");
+  const json = await res.json();
+  return json.data ?? null;
+}
+
+export async function createHotel(data: object) {
+  const res = await fetch(`${API_URL}/v1/data/${HOTELS_TABLE}`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("호텔 등록 실패");
+  return res.json();
+}
+
+export async function updateHotel(id: string, data: object) {
+  const res = await fetch(`${API_URL}/v1/data/${HOTELS_TABLE}/${id}`, {
+    method: "PUT",
+    headers: headers(),
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("호텔 수정 실패");
+  return res.json();
+}
+
+export async function deleteHotel(id: string) {
+  const res = await fetch(`${API_URL}/v1/data/${HOTELS_TABLE}/${id}`, {
+    method: "DELETE",
+    headers: headers(),
+  });
+  if (!res.ok) throw new Error("호텔 삭제 실패");
   return res.json();
 }
