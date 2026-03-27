@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     const result = await createPartner(data);
     return NextResponse.json(result);
-  } catch {
-    return NextResponse.json({ error: "등록 실패" }, { status: 500 });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "등록 실패";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
